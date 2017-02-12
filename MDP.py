@@ -48,6 +48,7 @@ class MDP:
         '''
         # Your Code Goes Here!
 
+        old_ball_x = self.ball_x
         # First update ball position, since this function simulates exactly one time step, all we should do is add velocity to current ball positions
         self.ball_x = self.ball_x + self.velocity_x
         self.ball_y = self.ball_y + self.velocity_y
@@ -70,20 +71,20 @@ class MDP:
 
         if self.ball_x < 0:
             self.ball_x = -self.ball_x
-            self.velocity_x = self.velocity_x
+            self.velocity_x = -self.velocity_x
 
-        if self.ball_x == self.paddle_x and (self.ball_y >= self.paddle_y and self.ball_y <= self.paddle_y + self.paddle_height):
+        if (old_ball_x < self.paddle_x and self.ball_x >= self.paddle_x) and (self.ball_y >= self.paddle_y and self.ball_y <= self.paddle_y + self.paddle_height):
             self.ball_x = 2 * self.paddle_x - self.ball_x
             self.velocity_x = -self.velocity_x + random.uniform(-0.015, 0.015)
             self.velocity_y = self.velocity_y + random.uniform(-0.03, 0.03)
             if math.fabs(self.velocity_x <= 0.03):
                 self.velocity_x = 0.04 if self.velocity_x > 0 else -0.04
             self.reward = 1
-            print "hit the panel!"
+            # print "hit the panel!"
 
         if self.ball_x > 1:
             self.reward = -1
-            print "out of bone!"
+            # print "out of bound!"
 
         # Restrict velocity to be below 1
         if math.fabs(self.velocity_x > 1):
@@ -118,9 +119,9 @@ class MDP:
         # Convert vy to discrete
         if math.fabs(self.velocity_y) <= 0.015:
             dvelocity_y = 0
-        elif dvelocity_y > 0:
+        elif self.velocity_y > 0:
             dvelocity_y = 1
-        elif dvelocity_y < 0:
+        elif self.velocity_y < 0:
             dvelocity_y = -1
         
         # Convert paddle_y to discrete
