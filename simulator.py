@@ -51,12 +51,14 @@ class Simulator:
         self.QTable[-1] = 0
         self.action_strs = ["NOTHING", "UP", "DOWN"]
         self.best_score = 0
+
     def f_function(self, state_tuple):
         '''
         Choose action based on an epsilon greedy approach
         At first, let's ignore the epsilon greedy approach
         We'll just pick any one of the three paddle movement, which produces the largest utility
         '''
+        a = random.random();
         action_selected = random.randint(0, 2)
 
         do_nothing = state_tuple + (0,)
@@ -65,14 +67,16 @@ class Simulator:
 
         utility_p_nothing = self.QTable[do_nothing]
         utility_p_up = self.QTable[do_up]
-        utility_p_down= self.QTable[do_down]
-
-        if utility_p_nothing > utility_p_up and utility_p_nothing > utility_p_down:
-            action_selected = 0
-        if utility_p_up > utility_p_down and utility_p_up > utility_p_nothing:
-            action_selected = 1
-        if utility_p_down > utility_p_up and utility_p_down > utility_p_nothing:
-            action_selected = 2
+        utility_p_down = self.QTable[do_down]
+        if (a >= self.epsilon_value):
+            if utility_p_nothing > utility_p_up and utility_p_nothing > utility_p_down:
+                action_selected = 0
+            if utility_p_up > utility_p_down and utility_p_up > utility_p_nothing:
+                action_selected = 1
+            if utility_p_down > utility_p_up and utility_p_down > utility_p_nothing:
+                action_selected = 2
+        else:
+            action_selected = random.randint(0, 2)
 
         return action_selected
 
@@ -84,6 +88,7 @@ class Simulator:
         while n != 0:
             self.play_game()
             n = n - 1
+            print n, " rounds remaining..."
         #self.win.close()
         print "Best score of all time: ", self.best_score
         pass
@@ -104,7 +109,6 @@ class Simulator:
         reward = 0
         special_state_key = -1
         # Call simulate_one_time_step in a loop, until game fails(ball pass the paddle)
-        print "starting our game!"
         counter = 0
         while 1:
             # Select action and simulate time step
