@@ -110,7 +110,12 @@ class Simulator:
         special_state_key = -1
         # Call simulate_one_time_step in a loop, until game fails(ball pass the paddle)
         counter = 0
+        last_reward = 0
+        curr_reward = mdp.read_curr_reward()
         while 1:
+
+            last_reward = curr_reward
+
             # Select action and simulate time step
             action_selected = self.f_function(curr_state)
             # print "Action selected is " + self.action_strs[action_selected]
@@ -140,6 +145,7 @@ class Simulator:
 
             last_state = curr_state
             last_action = action_selected
+            curr_reward = mdp.read_curr_reward()
         pass
 
     def draw_gui(self, cur, pre):
